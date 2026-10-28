@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DualCode</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="lobby">
+  <div class="card">
+    <h1>{ } DualCode</h1>
+    <p class="muted">Édition de code collaborative en P2P</p>
+    <input id="pseudo" class="txt" maxlength="16" placeholder="Ton pseudo" autocomplete="off">
+    <label class="btn wide">📁 Importer un dossier de départ (optionnel)<input id="import-dir" type="file" webkitdirectory multiple hidden></label>
+    <p id="import-status" class="muted"></p>
+    <button id="btn-create" class="btn primary wide">Créer une session (Host)</button>
+    <div class="sep">ou</div>
+    <h2>Rejoindre une session (Guest)</h2>
+    <div class="row">
+      <input id="join-code" maxlength="4" placeholder="Code (ex : A7X9)" autocomplete="off" spellcheck="false">
+      <button id="btn-join" class="btn">Rejoindre</button>
+    </div>
+    <p id="lobby-status" class="muted"></p>
+  </div>
+</section>
+
+<section id="app" class="hidden">
+  <header>
+    <b>{ } DualCode</b>
+    <span>Code : <code id="session-code"></code> <button id="btn-copy" class="btn sm">Copier le code</button></span>
+    <span class="grow"></span>
+    <span>👥 <b class="cnt">1</b> connecté(s)</span>
+    <button id="btn-stop" class="btn sm danger hidden">⏹ Arrêter la session</button>
+    <button id="btn-export" class="btn sm primary">Exporter en ZIP</button>
+  </header>
+  <div id="workbench">
+    <aside id="sidebar">
+      <div class="side-head">EXPLORATEUR
+        <span>
+          <button id="btn-newfile" class="icon" title="Nouveau fichier">🗎</button>
+          <button id="btn-newdir" class="icon" title="Nouveau dossier">🗀</button>
+        </span>
+      </div>
+      <div id="tree"></div>
+      <div class="side-head">MODIFICATIONS EN ATTENTE <span id="prop-count" class="badge">0</span></div>
+      <div id="props"></div>
+    </aside>
+    <section id="center">
+      <div id="tabs"></div>
+      <div id="editor"></div>
+    </section>
+    <aside id="chat">
+      <div class="side-head">PARTICIPANTS <span class="badge cnt">1</span></div>
+      <div id="members"></div>
+      <div class="side-head">SALON VOCAL <span id="vcount" class="badge">0</span></div>
+      <div class="vc">
+        <button id="v-join" class="btn sm primary">🎙 Rejoindre le salon</button>
+        <button id="v-mic" class="btn sm hidden"></button>
+        <button id="v-deaf" class="btn sm hidden"></button>
+        <button id="v-leave" class="btn sm danger hidden">Quitter</button>
+      </div>
+      <div class="side-head">CHAT</div>
+      <div id="msgs"></div>
+      <div class="chat-in"><input id="chat-input" placeholder="Message…" autocomplete="off"><button id="chat-send" class="btn sm primary">➤</button></div>
+    </aside>
+  </div>
+  <footer id="status">
+    <span id="role-badge"></span>
+    <span id="conn-status"></span>
+    <span class="grow"></span>
+    <span id="mode-label"></span>
+    <button id="btn-settings" class="hidden">⚙ Paramètres</button>
+    <span id="timer">⏱ 00:00:00</span>
+  </footer>
+</section>
+
+<div id="overlay" class="modal hidden"><div><h2 id="ov-title"></h2><p id="ov-text"></p><div id="ov-count"></div><button id="ov-btn" class="btn primary hidden"></button></div></div>
+<div id="ctx" class="hidden"></div>
+<div id="toast" class="hidden"></div>
+
+<div id="modal-join" class="modal hidden">
+  <div>
+    <h2>Demande de connexion</h2>
+    <p><b id="join-name"></b> demande à rejoindre la session.</p>
+    <div class="row end">
+      <button id="btn-refuse" class="btn danger">Refuser</button>
+      <button id="btn-accept" class="btn primary">Accepter</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-settings" class="modal hidden">
+  <div>
+    <h2>Paramètres de session</h2>
+    <label class="opt"><input type="radio" name="mode" value="secure" checked> Auto-approbation des modifications de l'Host <small>(défaut — le Host voit en direct les modifs, créations et suppressions du Guest, puis les accepte ou les refuse)</small></label>
+    <label class="opt"><input type="radio" name="mode" value="mutual"> Exiger la validation mutuelle <small>(les modifs de l'Host doivent aussi être approuvées par le Guest)</small></label>
+    <label class="opt"><input type="radio" name="mode" value="free"> Mode Libre P2P <small>(tout s'applique en direct, sans validation)</small></label>
+    <div class="row end"><button id="btn-close-settings" class="btn primary">Fermer</button></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.0/min/vs/loader.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
